@@ -1,0 +1,75 @@
+
+{% extends "base.html" %}
+{% load staticfiles %}
+{%block head %}
+<script>
+
+var ajaxSubmit = function(element)
+{
+    var form = element.form;
+    var xhttp = new XMLHttpRequest();
+    var toSend = ($(form).serialize());
+    $.post("response/",toSend,function(data,status)
+  {
+    console.log(data);
+    console.log(status);
+    form.remove();
+  }).fail(function(xhr, textStatus, errorThrown) {
+      //  alert(xhr.responseText);
+    });
+  // xhttp.onreadystatechange = function() {
+
+  //   if (xhttp.readyState == 4 && xhttp.status == 200) {
+  //     console.log(xhttp.responseText);
+  //     form.remove();
+  //
+  //   }
+  // };
+  // xhttp.open("POST", "response/", true);
+  // xhttp.send($(form).serialize());
+}
+
+</script>
+{% endblock %}
+    {% block body %}
+    <div class="container-fluid">
+    	<div class="row">
+    		<div class="col-md-12">
+    			<h3 class="text-center">
+    				Epoch!
+    			</h3>
+    		</div>
+    	</div>
+      {% for track in tracks %}
+    	<div class="row">
+    		<div class="col-md-8">
+    			<form >
+            {% csrf_token %}
+    				<div class="form-group">
+    					<label >
+    						Artist
+    					</label>
+    					<input class="form-control" name="artist" />
+    				</div>
+    				<div class="form-group">
+    					<label >
+    						Song
+    					</label>
+    					<input class="form-control" name="song" />
+    				</div>
+            <div class="form-group">
+              <iframe width="100%" height="450" scrolling="no" frameborder="no" src="{{track.url}}"></iframe>
+            </div>
+            <input type="hidden" name="trackid" value="{{track.id}}"></input>
+            <input type="hidden" name="userid" value="{{user.id}}"></input>
+    				<button  type="button" class="btn btn-default" onclick="ajaxSubmit(this); return false;">
+              Submit
+    				</button><p style="color : green">Already Submitted</p>
+    			</form>
+    		</div>
+    		<div class="col-md-4">
+    		</div>
+    	</div>
+      {% endfor %}
+    </div>
+  {% endblock %}
